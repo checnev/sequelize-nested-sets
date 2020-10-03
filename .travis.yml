@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - node
+env:
+  global:
+    - CC_TEST_REPORTER_ID=1e6715181ee948aa02dabe9dce706753dc4679920822963b031b3506b3bf1145
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS ns_test;'
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - npm run lint
+  - npm run test:cov
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT 
+notifications:
+  email: false

@@ -1,0 +1,93 @@
+[
+  {
+    "name": "cars",
+    "lft": 1,
+    "rgt": 14,
+    "depth": 0,
+    "tree": 1
+  },
+  {
+    "name": "freight",
+    "lft": 2,
+    "rgt": 5,
+    "depth": 1,
+    "tree": 1
+  },
+  {
+    "name": "ford cargo",
+    "lft": 3,
+    "rgt": 4,
+    "depth": 2,
+    "tree": 1
+  },
+  {
+    "name": "passenger",
+    "lft": 6,
+    "rgt": 9,
+    "depth": 1,
+    "tree": 1
+  },
+  {
+    "name": "ford transit bus",
+    "lft": 7,
+    "rgt": 8,
+    "depth": 2,
+    "tree": 1
+  },
+  {
+    "name": "personal",
+    "lft": 10,
+    "rgt": 13,
+    "depth": 1,
+    "tree": 1
+  },
+  {
+    "name": "ford focus",
+    "lft": 11,
+    "rgt": 12,
+    "depth": 2,
+    "tree": 1
+  },
+  {
+    "name": "moto",
+    "lft": 1,
+    "rgt": 12,
+    "depth": 0,
+    "tree": 2
+  },
+  {
+    "name": "supersport",
+    "lft": 2,
+    "rgt": 7,
+    "depth": 1,
+    "tree": 2
+  },
+  {
+    "name": "kawasaki",
+    "lft": 3,
+    "rgt": 6,
+    "depth": 2,
+    "tree": 2
+  },
+  {
+    "name": "ninja zx10r",
+    "lft": 4,
+    "rgt": 5,
+    "depth": 3,
+    "tree": 2
+  },
+  {
+    "name": "enduro",
+    "lft": 8,
+    "rgt": 11,
+    "depth": 1,
+    "tree": 2
+  },
+  {
+    "name": "sanchez",
+    "lft": 9,
+    "rgt": 10,
+    "depth": 2,
+    "tree": 2
+  }
+]

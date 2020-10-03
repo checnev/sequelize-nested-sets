@@ -1,0 +1,41 @@
+{
+  "name": "sequelize-nested-sets",
+  "version": "1.0.0",
+  "description": "The nested sets behavior for the Sequelize.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "test:cov": "npm test -- --coverage",
+    "test:cc": "jest --clearCache",
+    "lint": "eslint"
+  },
+  "devDependencies": {
+    "eslint": "^7.10.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^26.4.2",
+    "mysql2": "^2.2.5",
+    "sequelize": "^6.3.5"
+  },
+  "peerDependencies": {
+    "sequelize": "4.x || 5.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/checnev/sequelize-nested-sets.git"
+  },
+  "keywords": [
+    "sequelize",
+    "sequelize-plugin",
+    "nested-sets",
+    "tree",
+    "hierarhy"
+  ],
+  "author": "Eugene Cheshev <checnev97@gmail.com> (https://github.com/checnev)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/checnev/sequelize-nested-sets/issues"
+  },
+  "homepage": "https://github.com/checnev/sequelize-nested-sets#readme",
+  "dependencies": {}
+}
