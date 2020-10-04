@@ -1,6 +1,6 @@
 {
   "name": "sequelize-nested-sets",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The nested sets behavior for the Sequelize.",
   "main": "index.js",
   "scripts": {
