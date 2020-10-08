@@ -21,7 +21,7 @@ const {
 module.exports = (sequelize, modelName, attributes, options = {}, Model = null) => {
   /* eslint-disable no-param-reassign */
   options = prepareOptions(options);
-  attributes = prepareAttributes(attributes);
+  attributes = prepareAttributes(attributes, options);
   Model = initModel(sequelize, modelName, attributes);
 
   const addTreeToCondition = (where, tree) => {
