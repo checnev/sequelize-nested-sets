@@ -167,6 +167,9 @@ const menu = await Menu.findOne({ where: { name: 'Main Menu' } });
 const leaves = await menu.leave();
 ```
 ### Getting children of a node
+```javascript
+model.children([depth = null], [options = {}]);
+```
 To get all the children of a node
 ```javascript
 const menu = await Menu.findOne({ where: { name: 'Main Menu' } });
@@ -177,8 +180,16 @@ To get the first level children of a node
 const menu = await Menu.findOne({ where: { name: 'Main Menu' } });
 const children = await menu.children(1);
 ```
+To get the children by condition
+```javascript
+const menu = await Menu.findOne({ where: { name: 'Main Menu' } });
+const children = await menu.children(null, { where: { name: 'FAQ Page' } });
+```
 
 ### Getting parents of a node
+```javascript
+model.parents([depth = null], [options = {}]);
+```
 To get all the parents of a node
 ```javascript
 const faqPage = await Menu.findOne({ where: { name: 'FAQ Page' } });
@@ -188,6 +199,11 @@ To get the first parent of a node
 ```javascript
 const faqPage = await Menu.findOne({ where: { name: 'FAQ Page' } });
 const parents = await faqPage.parents(1);
+```
+To get the parent by condition
+```javascript
+const faqPage = await Menu.findOne({ where: { name: 'FAQ Page' } });
+const parents = await menu.parents(null, { where: { name: 'Main Menu' } });
 ```
 
 ### All methods see in [wiki](https://github.com/checnev/sequelize-nested-sets/wiki)

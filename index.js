@@ -1,3 +1,4 @@
+const cloneDeep = require('clone-deep');
 const { Op } = require('sequelize');
 const {
   prepareOptions,
@@ -33,44 +34,51 @@ module.exports = (sequelize, modelName, attributes, options = {}, Model = null) 
 
   /**
    * Get the root nodes
+   * @param {object=} [params={}] - Sequelize query options
    * @returns {Promise<Array<Model>>}
    */
-  Model.roots = async () => Model.findAll({
-    where: { lft: 1 },
-    order: ['lft'],
-  });
+  Model.roots = async (params = {}) => {
+    params = cloneDeep(params);
+    params.where = params.where || {};
+    params.where.lft = 1;
+
+    params.order = ['lft'];
+    return Model.findAll(params);
+  };
 
   /**
   * Get the leaf nodes
+  * @param {object=} [params={}] - Sequelize query options
   * @returns {Promise<Array<Model>>}
   */
-  Model.leaves = async () => Model.findAll({
-    where: {
-      rgt: { [Op.eq]: sequelize.literal('lft + 1') },
-    },
-    order: ['lft'],
-  });
+  Model.leaves = async (params = {}) => {
+    params = cloneDeep(params);
+    params.where = params.where || {};
+    params.where.rgt = { [Op.eq]: sequelize.literal('lft + 1') };
+
+    params.order = ['lft'];
+    return Model.findAll(params);
+  };
 
   /**
    * Get tree nodes
    * @param {int=} [depth=null] - Depth leave blank to get the whole tree
    * @param {int=} [tree=null] - Tree id
+   * @param {object=} [params={}] - Sequelize query options
    * @returns {Promise<Array<Model>>}
    */
-  Model.getTree = async (depth = null, tree = null) => {
-    const where = {
-      lft: { [Op.gte]: 1 },
-    };
+  Model.getTree = async (depth = null, tree = null, params = {}) => {
+    params = cloneDeep(params);
+    params.where = params.where || {};
+    params.where.lft = { [Op.gte]: 1 };
 
     if (depth) {
-      where.depth = { [Op.between]: [0, depth] };
+      params.where.depth = { [Op.between]: [0, depth] };
     }
+    addTreeToCondition(params.where, tree);
 
-    addTreeToCondition(where, tree);
-    return Model.findAll({
-      where,
-      order: ['lft'],
-    });
+    params.order = ['lft'];
+    return Model.findAll(params);
   };
 
   /**
@@ -117,63 +125,67 @@ module.exports = (sequelize, modelName, attributes, options = {}, Model = null) 
 
   /**
    * Get child leaf nodes
+   * @param {object=} [params={}] - Sequelize query options
    * @returns {Promise<Array<Model>>}
    */
-  Model.prototype.leaves = async function leaves() {
-    return Model.findAll({
-      where: addTreeToCondition({
-        [Op.and]: [
-          { rgt: { [Op.eq]: sequelize.literal('lft + 1') } },
-          { rgt: { [Op.lt]: this.rgt } },
-        ],
-        lft: { [Op.gt]: this.lft },
-      }, this.tree),
-      order: ['lft'],
-    });
+  Model.prototype.leaves = async function leaves(params = {}) {
+    params = cloneDeep(params);
+    params.where = params.where || {};
+
+    params.where.rgt = {
+      [Op.and]: [
+        { [Op.eq]: sequelize.literal('lft + 1') },
+        { [Op.lt]: this.rgt },
+      ],
+    };
+    params.where.lft = { [Op.gt]: this.lft };
+    addTreeToCondition(params.where, this.tree);
+
+    params.order = ['lft'];
+
+    return Model.findAll(params);
   };
 
   /**
    * Get children nodes
-   * @param {int=} [depth=nulll] - Depth leave blank to get the whole tree
+   * @param {int=} [depth=null] - Depth leave blank to get the whole tree
+   * @param {object=} [params={}] - Sequelize query options
    * @returns {Promise<Array<Model>>}
    */
-  Model.prototype.children = async function children(depth = null) {
-    const where = {
-      lft: { [Op.gt]: this.lft },
-      rgt: { [Op.lt]: this.rgt },
-    };
+  Model.prototype.children = async function children(depth = null, params = {}) {
+    params = cloneDeep(params);
+    params.where = params.where || {};
+    params.where.lft = { [Op.gt]: this.lft };
+    params.where.rgt = { [Op.lt]: this.rgt };
 
     if (depth) {
-      where.depth = { [Op.lte]: +(this.depth + depth) };
+      params.where.depth = { [Op.lte]: +(this.depth + depth) };
     }
+    addTreeToCondition(params.where, this.tree);
 
-    addTreeToCondition(where, this.tree);
-    return Model.findAll({
-      where,
-      order: ['lft'],
-    });
+    params.order = ['lft'];
+    return Model.findAll(params);
   };
 
   /**
    * Get parent nodes
    * @param {int=} [depth=null] - Depth leave blank to get all the parents
+   * @param {object=} [params={}] - Sequelize query options
    * @returns {Promise<Array<Model>>}
    */
-  Model.prototype.parents = async function parents(depth = null) {
-    const where = {
-      lft: { [Op.lt]: this.lft },
-      rgt: { [Op.gt]: this.rgt },
-    };
+  Model.prototype.parents = async function parents(depth = null, params = {}) {
+    params = cloneDeep(params);
+    params.where = params.where || {};
+    params.where.lft = { [Op.lt]: this.lft };
+    params.where.rgt = { [Op.gt]: this.rgt };
 
     if (depth) {
-      where.depth = { [Op.gte]: +(this.depth - depth) };
+      params.where.depth = { [Op.gte]: +(this.depth - depth) };
     }
+    addTreeToCondition(params.where, this.tree);
 
-    addTreeToCondition(where, this.tree);
-    return Model.findAll({
-      where,
-      order: ['lft'],
-    });
+    params.order = ['lft'];
+    return Model.findAll(params);
   };
 
   /**

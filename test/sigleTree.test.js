@@ -209,7 +209,7 @@ describe('SingleTree: parents()', () => {
     });
   });
 
-  test('Should return 2 children', async () => {
+  test('Should return 2 parents', async () => {
     const model = await Model.findOne({ where: { name: 'ford focus' } });
     const parents = await model.parents();
 

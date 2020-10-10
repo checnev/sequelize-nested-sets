@@ -74,6 +74,16 @@ describe('MultiTree: Model.roots()', () => {
   test('Should be different tries', () => {
     expect(roots[0].tree).not.toBe(roots[1].tree);
   });
+
+  test('Should return tree by condition', async () => {
+    const root = await Model.roots({ where: { name: 'cars' } });
+    expect(root[0]).toEqual(expect.objectContaining({
+      name: 'cars',
+      lft: 1,
+      depth: 0,
+    }));
+    expect(root.length).toBe(1);
+  });
 });
 
 describe('MultiTree: Model.leaves()', () => {
@@ -86,6 +96,11 @@ describe('MultiTree: Model.leaves()', () => {
 
     expect(leaves.length).toBe(5);
   });
+
+  test('Should return 4 leaves by condition', async () => {
+    const leaves = await Model.leaves({ where: { depth: 2 } });
+    expect(leaves.length).toBe(4);
+  });
 });
 
 describe('MultiTree: Model.getTree', () => {
@@ -97,6 +112,7 @@ describe('MultiTree: Model.getTree', () => {
     expect(tree.length).toBe(4);
   });
 });
+
 describe('Multitree: isRoot()', () => {
   test('Should return true', async () => {
     const root = await Model.findOne({ where: { name: 'cars' } });
@@ -189,6 +205,18 @@ describe('MiltiTree: leaves()', () => {
     const leaves = await model.leaves();
     expect(leaves.length).toBe(0);
   });
+
+  test('Should return 1 leaves by condition', async () => {
+    const model = await Model.findOne({ where: { name: 'cars' } });
+    const leaves = await model.leaves({ where: { name: 'ford cargo' } });
+
+    expect(leaves[0]).toEqual(expect.objectContaining({
+      name: 'ford cargo',
+      rgt: leaves[0].lft + 1,
+    }));
+    expect(leaves[0].isChildOf(model)).toBe(true);
+    expect(leaves.length).toBe(1);
+  });
 });
 
 describe('MiltiTree: children()', () => {
@@ -212,6 +240,15 @@ describe('MiltiTree: children()', () => {
       expect(child.isChildOf(model)).toBe(true);
     });
   });
+
+  test('Should return 1 children by condition', async () => {
+    const model = await Model.findOne({ where: { name: 'cars' } });
+    const children = await model.children(1, { where: { name: 'freight' } });
+
+    expect(children[0].name).toBe('freight');
+    expect(children[0].isChildOf(model)).toBe(true);
+    expect(children.length).toBe(1);
+  });
 });
 
 describe('MiltiTree: parents()', () => {
@@ -226,7 +263,7 @@ describe('MiltiTree: parents()', () => {
     });
   });
 
-  test('Should return 2 children', async () => {
+  test('Should return 2 parents', async () => {
     const model = await Model.findOne({ where: { name: 'ford focus' } });
     const parents = await model.parents();
 
@@ -234,6 +271,15 @@ describe('MiltiTree: parents()', () => {
     parents.forEach((parent) => {
       expect(parent.isParentOf(model)).toBe(true);
     });
+  });
+
+  test('Should return 1 parent by condition', async () => {
+    const model = await Model.findOne({ where: { name: 'ford cargo' } });
+    const parents = await model.parents(null, { where: { name: 'cars' } });
+
+    expect(parents[0].name).toBe('cars');
+    expect(parents[0].isParentOf(model)).toBe(true);
+    expect(parents.length).toBe(1);
   });
 });
 
